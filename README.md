@@ -4,23 +4,6 @@
 
 This repository contains our submission: a **10-page paper** and **reproducible code** for data collection, processing, and analysis. The sample covers March 1–21, 2023 (UTC) and includes the Silicon Valley Bank (SVB) failure and USDC de-peg.
 
----
-
-## Deliverables (competition requirements)
-
-Per IAQF rules: the **solution** is at most **10 pages**, single-sided, **Times New Roman 12pt**, and must contain **no reference to school, students, or team name** (blind judging). The **code** is submitted as a **separate addendum**, not in the 10 pages. See **SUBMISSION_CHECKLIST.md** for the full checklist and submission address.
-
-1. **Solution PDF** (`paper/main.tex` → PDF) with:
-   - Financial context and motivation (including regulatory background)
-   - Data description and methodology
-   - Empirical results on cross-currency pricing and liquidity
-   - Discussion of how stablecoin regulation and market structure affect observed patterns
-   - Conclusions and implications for trading, risk management, and policy
-
-2. **Code addendum** (this repo), submitted separately, with clear reproduction instructions below.
-
----
-
 ## How to reproduce the results (step by step)
 
 ### Prerequisites
