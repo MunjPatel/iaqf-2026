@@ -1,7 +1,7 @@
-"""
+""""
 Export key figures as PNG for the paper. Run from project root with PYTHONPATH set.
 Requires: pip install kaleido (or plotly[ Kaleido]).
-"""
+""""
 import sys
 from pathlib import Path
 
