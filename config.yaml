@@ -1,14 +1,14 @@
-# IAQF 2026 — Centralized parameters (per implementation plan §6.1)
+# central params for our pipeline
 
-# IAQF 2026: 21-day window March 1–21, 2023 (UTC); includes USDC de-peg (SVB).
+# our sample: march 1–21, 2023 (utc); includes usdc de-peg (svb)
 start_date: "2023-03-01"
-end_date: "2023-03-22"   # exclusive: through March 21 23:59
+end_date: "2023-03-22"   # exclusive: through march 21 23:59
 timezone: "UTC"
 
-# Candle granularity (primary: 1-minute)
+# candle granularity (primary: 1-minute)
 candle_interval_minutes: 1
 
-# Exchanges and pairs (per §1, §2.1)
+# exchanges and pairs
 coinbase:
   base_url: "https://api.exchange.coinbase.com"
   pairs:
@@ -16,40 +16,40 @@ coinbase:
     - "BTC-USDT"
     - "BTC-USDC"
   max_candles_per_request: 300
-  rate_limit_sleep_seconds: 0.2   # ~5 req/s with margin (public 10/s)
+  rate_limit_sleep_seconds: 0.2   # ~5 req/s with margin
 
 binance:
   base_url: "https://api.binance.us"
   pairs:
     - "BTCUSDT"
     - "BTCUSDC"
-  # Binance does not list BTC/USD (fiat)
+  # binance doesn't list btc/usd (fiat)
   max_candles_per_request: 1000
   rate_limit_sleep_seconds: 0.35
 
 kraken:
   base_url: "https://api.kraken.com"
-  # REST OHLC accepts altname (XBTUSD) or internal (XXBTZUSD). Use AssetPairs to verify.
+  # rest ohlc accepts altname (xbtusd) or internal (xxbtzusd)
   pairs:
     - "XBTUSD"
     - "XBTUSDT"
     - "XBTUSDC"
   max_candles_per_request: 720
-  rate_limit_sleep_seconds: 1.0   # 1 req/s public
+  rate_limit_sleep_seconds: 1.0   # 1 req/s
 
-# Paths (relative to project root)
+# paths (relative to project root)
 paths:
   raw: "data/raw"
   clean: "data/clean"
   derived: "data/derived"
   supplementary: "data/supplementary"
 
-# Cleaning (§2.2 Step 2)
+# cleaning
 cleaning:
   max_consecutive_missing_forward_fill: 5
   expected_candles_21d: 30240   # 21 * 24 * 60
 
-# Robustness / analysis defaults (§4)
+# robustness / analysis defaults
 winsorize_lower_percentile: 1
 winsorize_upper_percentile: 99
-newey_west_bandwidth: null   # set to max(1, int(T**0.33)) in code
+newey_west_bandwidth: null   # we set to max(1, int(t**0.33)) in code
