@@ -23,6 +23,6 @@ figures:
 	@echo "Run visualization scripts to export to paper/figures/."
 
 paper:
-	@echo "Build paper (e.g. pdflatex in paper/)."
+	cd paper && pdflatex -interaction=nonstopmode main.tex && pdflatex -interaction=nonstopmode main.tex
 
 all: collect clean features analysis figures paper
