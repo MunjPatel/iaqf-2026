@@ -1,8 +1,4 @@
-"""
-Coinbase Exchange (Pro REST API) candle collector.
-§2.1: GET .../products/{pair}/candles — start, end, granularity=60.
-Fields: [timestamp, low, high, open, close, volume]. Max 300 candles/request (5h of 1m).
-"""
+"""coinbase pro rest api candle collector. we fetch 1m candles in chunks (300/request)."""
 import json
 import time
 from pathlib import Path
@@ -24,7 +20,7 @@ def fetch_candles(
     sleep_s: float = 0.2,
     max_retries: int = 5,
 ):
-    """Fetch 1m candles in chunks. Returns list of raw rows [timestamp, low, high, open, close, volume]."""
+    """fetch 1m candles in chunks. returns list of raw rows [timestamp, low, high, open, close, volume]."""
     url = f"{base_url}/products/{pair}/candles"
     all_rows = []
     start = start_utc
@@ -66,7 +62,7 @@ def fetch_candles(
 
 
 def raw_to_dataframe(rows: list) -> pd.DataFrame:
-    """Parse Coinbase raw rows to DataFrame. Columns: time, low, high, open, close, volume."""
+    """parse coinbase raw rows to dataframe. columns: time, low, high, open, close, volume."""
     if not rows:
         return pd.DataFrame()
     df = pd.DataFrame(
@@ -112,7 +108,7 @@ def run(config=None):
             print(f"  {pair}: No data.")
             continue
 
-        # Save raw JSON first (§2.2 Step 1)
+        # save raw json first (step 1 of our pipeline)
         raw_json_path = raw_dir / f"{pair}_1m_raw.json"
         with open(raw_json_path, "w", encoding="utf-8") as f:
             json.dump(rows, f, indent=None)

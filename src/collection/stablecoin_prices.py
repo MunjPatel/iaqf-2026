@@ -1,7 +1,4 @@
-"""
-§2.4 Supplementary data: USDC/USD and USDT/USD peg prices (e.g. CoinGecko market_chart/range).
-Optional: implement when needed for event-study validation.
-"""
+"""supplementary: usdc/usd and usdt/usd peg prices (e.g. coingecko). we left this optional for now."""
 from src.utils import get_project_root, load_config
 
 

@@ -1,7 +1,4 @@
-"""
-Interactive Plotly figures for IAQF 2026: basis, stablecoin discount, liquidity, regulatory.
-Saves HTML to results/ for dashboard embedding. Includes news-event annotations and standout plots.
-"""
+"""interactive plotly figures: basis, stablecoin discount, liquidity, regulatory. we save html to results/ for dashboard embedding and add news-event annotations plus standout plots."""
 from pathlib import Path
 from datetime import datetime, timezone
 
@@ -13,18 +10,18 @@ from plotly.subplots import make_subplots
 
 from src.utils import get_project_root, load_config, SVB_ANNOUNCE_UTC, USDC_DEPEG_TROUGH_UTC
 
-# Colorblind-friendly palette; consistent across plots
+# colorblind-friendly palette, same across all plots
 COLORS = {"usd_usdt": "#0173B2", "usd_usdc": "#DE8F05", "usdt_usdc": "#029E73"}
 REGIME_COLORS = {"pre": "rgba(0,150,80,0.12)", "crisis": "rgba(200,50,50,0.15)", "post": "rgba(70,100,180,0.10)"}
 
 
 def _to_plotly_ts(d):
-    """Convert datetime to Plotly x-axis value (ms since epoch)."""
+    """convert datetime to plotly x-axis value (ms since epoch)."""
     return int(pd.Timestamp(d).value / 1e6)
 
 
 def _regime_vertical_shapes():
-    """Vertical shaded regions for Pre-SVB, SVB crisis, Post-SVB (numeric x for Plotly)."""
+    """vertical shaded regions for pre-svb, svb crisis, post-svb (numeric x for plotly)."""
     return [
         dict(x0=_to_plotly_ts("2023-03-01"), x1=_to_plotly_ts("2023-03-10"), fillcolor=REGIME_COLORS["pre"], line={"width": 0}),
         dict(x0=_to_plotly_ts("2023-03-10"), x1=_to_plotly_ts("2023-03-14"), fillcolor=REGIME_COLORS["crisis"], line={"width": 0}),
@@ -33,7 +30,7 @@ def _regime_vertical_shapes():
 
 
 def _load_news_events(verify_links=False):
-    """Load events. For dashboard table use verify_links=True so only working URLs are shown."""
+    """load events. for dashboard we use verify_links=True so only working urls show."""
     try:
         from src.visualization.news_events import load_news_events
         return load_news_events(verify_links=verify_links)
@@ -42,7 +39,7 @@ def _load_news_events(verify_links=False):
 
 
 def plot_basis_timeseries(derived_base: Path, results_dir: Path) -> str:
-    """Q1: Interactive basis with polished style, zero line, regime bands, and news-event vlines."""
+    """q1: interactive basis with zero line, regime bands, news-event vlines."""
     path = derived_base / "basis_1m.parquet"
     if not path.exists():
         return ""
@@ -87,7 +84,7 @@ def plot_basis_timeseries(derived_base: Path, results_dir: Path) -> str:
 
 
 def plot_stablecoin_discount(derived_base: Path, results_dir: Path) -> str:
-    """Q2: USDC/USDT implied discount from peg (1.00) over time."""
+    """q2: usdc/usdt implied discount from peg (1.00) over time."""
     path = derived_base / "basis_1m.parquet"
     if not path.exists():
         return ""
@@ -123,7 +120,7 @@ def plot_stablecoin_discount(derived_base: Path, results_dir: Path) -> str:
 
 
 def plot_liquidity_by_quote(derived_base: Path, results_dir: Path) -> str:
-    """Q3: Liquidity — HL spread (bps) and volume by exchange and quote currency."""
+    """q3: liquidity — hl spread (bps) and volume by exchange and quote currency."""
     path = derived_base / "liquidity_1m.parquet"
     if not path.exists():
         return ""
@@ -153,7 +150,7 @@ def plot_liquidity_by_quote(derived_base: Path, results_dir: Path) -> str:
 
 
 def plot_basis_by_regime(results_dir: Path) -> str:
-    """Bar chart: mean basis by regime (from basis_summary_by_regime.csv)."""
+    """bar chart: mean basis by regime (from basis_summary_by_regime.csv)."""
     path = results_dir / "basis_summary_by_regime.csv"
     if not path.exists():
         return ""
@@ -170,7 +167,7 @@ def plot_basis_by_regime(results_dir: Path) -> str:
 
 
 def plot_basis_distribution_by_regime(derived_base: Path, results_dir: Path) -> str:
-    """Standout: Distribution of basis by regime (histogram/KDE) – shows regime shift clearly."""
+    """standout: distribution of basis by regime (histogram/kde) — shows regime shift clearly."""
     path = derived_base / "basis_1m.parquet"
     if not path.exists():
         return ""
@@ -198,7 +195,7 @@ def plot_basis_distribution_by_regime(derived_base: Path, results_dir: Path) -> 
 
 
 def plot_rolling_basis_volatility(derived_base: Path, results_dir: Path) -> str:
-    """Standout: 1h rolling std of basis – spikes during crisis."""
+    """standout: 1h rolling std of basis — spikes during crisis."""
     path = derived_base / "basis_1m.parquet"
     if not path.exists():
         return ""
@@ -222,7 +219,7 @@ def plot_rolling_basis_volatility(derived_base: Path, results_dir: Path) -> str:
 
 
 def plot_event_study_svb(derived_base: Path, results_dir: Path) -> str:
-    """Standout: Event-study style – basis level in event time (hours around March 10, 12:00 UTC)."""
+    """standout: event-study style — basis level in event time (hours around march 10, 12:00 utc)."""
     path = derived_base / "basis_1m.parquet"
     if not path.exists():
         return ""
@@ -249,7 +246,7 @@ def plot_event_study_svb(derived_base: Path, results_dir: Path) -> str:
 
 
 def plot_exploitable_basis(derived_base: Path, results_dir: Path) -> str:
-    """Standout: Basis net of round-trip cost (e.g. 50 bps). Only positive = exploitable."""
+    """standout: basis net of round-trip cost (e.g. 50 bps). only positive = exploitable."""
     path = derived_base / "basis_1m.parquet"
     if not path.exists():
         return ""
@@ -272,7 +269,7 @@ def plot_exploitable_basis(derived_base: Path, results_dir: Path) -> str:
 
 
 def build_dashboard(results_dir: Path) -> str:
-    """Single HTML dashboard with iframes, news-event links, and standout section."""
+    """single html dashboard with iframes, news-event links, standout section."""
     basis_ts = results_dir / "plot_basis_timeseries.html"
     stablecoin = results_dir / "plot_stablecoin_discount.html"
     liquidity = results_dir / "plot_liquidity.html"

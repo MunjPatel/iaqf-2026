@@ -1,7 +1,4 @@
-"""
-§2.2 Step 4: hl_spread_proxy = (high - low) / ((high + low)/2); volume_usd = volume * close.
-§3c: Parkinson spread, Amihud, dollar volume — full liquidity metrics in analysis.
-"""
+"""we compute hl_spread_proxy = (high-low)/((high+low)/2) and volume_usd = volume*close. parkinson, amihud, dollar volume in analysis."""
 from pathlib import Path
 
 import pandas as pd

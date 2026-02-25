@@ -1,7 +1,4 @@
-"""
-Run all analyses for IAQF 2026 (4 questions) and save summary results to data/derived/ and results/.
-Problem: Cross-currency dynamics, stablecoin regulation, March 1-21 2023.
-"""
+"""run all analyses for the 4 questions and save results to data/derived/ and results/. we study march 1–21 2023: cross-currency dynamics and stablecoin regulation."""
 from pathlib import Path
 from datetime import datetime, timezone
 
@@ -12,7 +9,7 @@ from src.utils import get_project_root, load_config, parse_window, SVB_ANNOUNCE_
 
 
 def _regime_mask(df: pd.DataFrame) -> pd.Series:
-    """Pre-SVB (Mar 1-9), SVB crisis (Mar 10-13), Post-SVB (Mar 14-21)."""
+    """pre-svb (mar 1–9), svb crisis (mar 10–13), post-svb (mar 14–21)."""
     t = pd.to_datetime(df["time"], utc=True)
     pre = t < datetime(2023, 3, 10, tzinfo=timezone.utc)
     crisis = (t >= datetime(2023, 3, 10, tzinfo=timezone.utc)) & (t < datetime(2023, 3, 14, tzinfo=timezone.utc))
@@ -21,7 +18,7 @@ def _regime_mask(df: pd.DataFrame) -> pd.Series:
 
 
 def run_basis_analysis(derived_base: Path, results_dir: Path) -> pd.DataFrame:
-    """Q1: Cross-currency basis — stats by regime, transaction-cost note."""
+    """q1: cross-currency basis — stats by regime, plus transaction-cost note."""
     path = derived_base / "basis_1m.parquet"
     if not path.exists():
         return pd.DataFrame()
@@ -58,7 +55,7 @@ def run_basis_analysis(derived_base: Path, results_dir: Path) -> pd.DataFrame:
 
 
 def run_stablecoin_analysis(derived_base: Path, results_dir: Path) -> pd.DataFrame:
-    """Q2: Stablecoin premium/discount — implied USDC/USDT vs USD from basis."""
+    """q2: stablecoin premium/discount — implied usdc/usdt vs usd from basis."""
     path = derived_base / "basis_1m.parquet"
     if not path.exists():
         return pd.DataFrame()
@@ -66,7 +63,7 @@ def run_stablecoin_analysis(derived_base: Path, results_dir: Path) -> pd.DataFra
     df["time"] = pd.to_datetime(df["time"], utc=True)
     if "close_usd" not in df.columns or "close_usdc" not in df.columns:
         return pd.DataFrame()
-    # Implied USDC/USD = close_BTCUSD / close_BTCUSDC (deviation from 1 = discount)
+    # implied usdc/usd = close_btcusd / close_btcusdc (deviation from 1 = discount)
     df["usdc_usd_implied"] = df["close_usd"] / df["close_usdc"]
     df["usdc_discount_bps"] = (1 - df["usdc_usd_implied"]) * 10_000
     if "close_usdt" in df.columns:
@@ -100,13 +97,13 @@ def run_stablecoin_analysis(derived_base: Path, results_dir: Path) -> pd.DataFra
 
 
 def run_liquidity_analysis(derived_base: Path, results_dir: Path) -> pd.DataFrame:
-    """Q3: Liquidity & fragmentation — spread proxy, volume by quote currency and exchange."""
+    """q3: liquidity and fragmentation — spread proxy, volume by quote currency and exchange."""
     path = derived_base / "liquidity_1m.parquet"
     if not path.exists():
         return pd.DataFrame()
     df = pd.read_parquet(path)
     df["time"] = pd.to_datetime(df["time"], utc=True)
-    # Quote currency from pair name
+    # quote currency from pair name
     def quote(p):
         p = str(p).upper()
         if "USDT" in p:
@@ -142,7 +139,7 @@ def run_liquidity_analysis(derived_base: Path, results_dir: Path) -> pd.DataFram
 
 
 def run_regulatory_summary(results_dir: Path) -> str:
-    """Q4: Regulatory overlay — map findings to GENIUS Act / policy (text)."""
+    """q4: regulatory overlay — we map our findings to genius act and policy."""
     text = """
 ## Regulatory Overlay (IAQF 2026 Q4)
 

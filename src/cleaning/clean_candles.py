@@ -1,6 +1,4 @@
-"""
-§2.2 Step 2: Clean raw candles — grid alignment, forward-fill ≤5 min gaps, validate, save to data/clean/.
-"""
+"""clean raw candles: grid alignment, forward-fill gaps up to 5 min, validate, save to data/clean/."""
 from pathlib import Path
 
 import pandas as pd
@@ -10,7 +8,7 @@ from src.utils import get_project_root, load_config, parse_window
 
 
 def build_minute_grid(start_utc, end_utc) -> pd.DatetimeIndex:
-    """Full 1-minute grid from start to end (inclusive of last minute before end). 21 days = 30,240 candles."""
+    """full 1-minute grid from start to end. 21 days = 30,240 candles."""
     grid = pd.date_range(start=start_utc, end=end_utc, freq="1min", inclusive="left")
     return grid
 
@@ -21,9 +19,7 @@ def clean_one(
     grid: pd.DatetimeIndex,
     max_fill: int,
 ) -> pd.DataFrame:
-    """
-    Load raw parquet, left-join to grid, forward-fill gaps ≤ max_fill minutes, validate, save.
-    """
+    """load raw parquet, left-join to grid, forward-fill gaps up to max_fill min, validate, save."""
     df = pd.read_parquet(raw_path)
     if "open_time" in df.columns:
         df = df.rename(columns={"open_time": "time"})
@@ -36,7 +32,7 @@ def clean_one(
     grid_df = pd.DataFrame({"time": grid})
     merged = grid_df.merge(df, on="time", how="left")
 
-    # Ensure we have standard OHLCV columns (Kraken has vwap, count — keep time, o, h, l, c, volume)
+    # standard ohlcv columns (kraken has vwap, count — we keep time, o, h, l, c, volume)
     for c in ["open", "high", "low", "close", "volume"]:
         if c not in merged.columns:
             merged[c] = np.nan
@@ -46,16 +42,16 @@ def clean_one(
     for col in ["open", "high", "low", "close", "volume"]:
         merged[col] = pd.to_numeric(merged[col], errors="coerce")
 
-    # Consecutive missing: forward-fill close with limit = max_fill (only fill up to 5 in a row)
+    # consecutive missing: forward-fill close with limit=max_fill (up to 5 in a row)
     merged["close"] = merged["close"].ffill(limit=max_fill).bfill(limit=max_fill)
-    # Rows that got filled (had NaN open but now have close): set volume=0, ohlc=close
+    # rows that got filled (had nan open but now have close): set volume=0, ohlc=close
     filled_mask = merged["open"].isna() & merged["close"].notna()
     merged.loc[filled_mask, "open"] = merged.loc[filled_mask, "close"]
     merged.loc[filled_mask, "high"] = merged.loc[filled_mask, "close"]
     merged.loc[filled_mask, "low"] = merged.loc[filled_mask, "close"]
     merged.loc[filled_mask, "volume"] = 0.0
 
-    # Validate
+    # validate
     valid = merged["close"].notna()
     if valid.any():
         assert (merged.loc[valid, "close"] >= 0).all(), "Negative close"

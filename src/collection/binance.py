@@ -1,8 +1,4 @@
-"""
-Binance REST API klines collector.
-§2.1: GET api.binance.com/api/v3/klines — symbol, interval=1m, startTime, endTime, limit=1000.
-Pairs: BTCUSDT, BTCUSDC (no BTC/USD). Use open_time as canonical timestamp (§2.3).
-"""
+"""binance rest api klines collector. we fetch 1m klines in chunks. pairs: btcusdt, btcusdc (no btc/usd). we use open_time as canonical timestamp."""
 import json
 import time
 from pathlib import Path
@@ -30,7 +26,7 @@ def fetch_klines(
     sleep_s: float = 0.35,
     max_retries: int = 5,
 ):
-    """Fetch 1m klines in chunks. start_ts/end_ts in seconds (API uses ms)."""
+    """fetch 1m klines in chunks. start_ts/end_ts in seconds (api uses ms)."""
     url = f"{base_url}/api/v3/klines"
     all_rows = []
     req_start = start_ts * 1000
@@ -76,7 +72,7 @@ def fetch_klines(
 
 
 def raw_to_dataframe(rows: list) -> pd.DataFrame:
-    """Parse Binance klines to DataFrame. Canonical time = open_time (§2.3)."""
+    """parse binance klines to dataframe. canonical time = open_time."""
     if not rows:
         return pd.DataFrame()
     df = pd.DataFrame(rows, columns=COLUMNS)

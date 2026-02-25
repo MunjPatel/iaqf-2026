@@ -1,4 +1,4 @@
-"""Load config.yaml from project root."""
+"""load config.yaml from project root."""
 from pathlib import Path
 from typing import Optional
 import yaml

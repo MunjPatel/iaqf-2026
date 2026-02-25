@@ -1,4 +1,4 @@
-"""Load news/event timeline for March 2023 SVB/USDC. Verify links before showing on dashboard."""
+"""load news/event timeline for march 2023 svb/usdc. we verify links before showing on dashboard."""
 from pathlib import Path
 from typing import List, Tuple
 
@@ -6,12 +6,12 @@ import pandas as pd
 
 from src.utils import get_project_root, load_config
 
-# User-Agent so servers don't block the check
+# user-agent so servers don't block our check
 _HEADERS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0"}
 
 
 def load_news_events(config=None, verify_links=False) -> List[Tuple]:
-    """Return list of (timestamp_utc, title, url). If verify_links=True, only return URLs that return HTTP 200."""
+    """return list of (timestamp_utc, title, url). we use verify_links=True to filter to working urls only."""
     config = config or load_config()
     root = get_project_root()
     path = root / config["paths"]["supplementary"] / "news_events.csv"
@@ -31,7 +31,7 @@ def load_news_events(config=None, verify_links=False) -> List[Tuple]:
 
 
 def _keep_only_working_links(events: List[Tuple], timeout_sec: int = 10) -> List[Tuple]:
-    """Keep only (ts, title, url) where url returns HTTP 200."""
+    """keep only (ts, title, url) where url returns http 200."""
     try:
         import requests
     except ImportError:

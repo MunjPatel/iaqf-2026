@@ -1,7 +1,4 @@
-"""
-§2.2 Step 3: Cross-exchange alignment — inner join on minute timestamp per pair-type.
-Output: aligned_btc_usd.parquet, aligned_btc_usdt.parquet, aligned_btc_usdc.parquet in data/clean/.
-"""
+"""cross-exchange alignment: we inner join on minute timestamp per pair-type. outputs aligned_btc_usd, aligned_btc_usdt, aligned_btc_usdc in data/clean/."""
 from pathlib import Path
 from typing import Optional
 
@@ -25,11 +22,7 @@ def align_pair(
     components,
     suffix_map,
 ) -> pd.DataFrame:
-    """
-    components: [(exchange, pair), ...] e.g. [("coinbase", "BTC-USD"), ("kraken", "XBTUSD")].
-    suffix_map: {"coinbase": "_coinbase", "kraken": "_kraken"}.
-    Inner join on time, with suffixed columns for close, volume, etc.
-    """
+    """components: [(exchange, pair), ...]. suffix_map for column suffixes. we inner join on time with suffixed columns for close, volume, etc."""
     dfs = []
     for ex, pair in components:
         df = load_clean(clean_base, ex, pair)
@@ -56,7 +49,7 @@ def run(config=None):
     clean_base = root / config["paths"]["clean"]
     suffix_map = {"coinbase": "_coinbase", "binance": "_binance", "kraken": "_kraken"}
 
-    # §2.2 Step 3
+    # align per pair-type
     alignments = [
         ("aligned_btc_usd.parquet", [("coinbase", "BTC-USD"), ("kraken", "XBTUSD")]),
         (

@@ -1,8 +1,4 @@
-"""
-Cross-currency basis (Problem Q1): BTC/USD vs BTC/USDT vs BTC/USDC.
-basis_usd_usdt = (close_USD - close_USDT) / close_USD [bps]; same for USD-USDC, USDT-USDC.
-Uses aligned files when present; fallback: build from clean Coinbase-only (BTC-USD, BTC-USDT, BTC-USDC).
-"""
+"""cross-currency basis (q1): btc/usd vs btc/usdt vs btc/usdc. we compute basis_usd_usdt = (close_usd - close_usdt)/close_usd in bps, same for usd-usdc and usdt-usdc. we use aligned files when present; fallback: build from clean coinbase-only data."""
 from pathlib import Path
 
 import pandas as pd
@@ -29,7 +25,7 @@ def _close_col(df: pd.DataFrame) -> str:
 
 
 def _build_from_clean_coinbase(clean_base: Path) -> pd.DataFrame:
-    """Build basis from clean/coinbase single-exchange data when aligned files missing."""
+    """build basis from clean coinbase single-exchange data when aligned files missing."""
     pairs = [("BTC-USD", "close_usd"), ("BTC-USDT", "close_usdt"), ("BTC-USDC", "close_usdc")]
     base = None
     for pair, col_out in pairs:
@@ -74,7 +70,7 @@ def run(config=None):
         base = _build_from_clean_coinbase(clean_base)
 
     if base.empty or "close_usd" not in base.columns:
-        print("Basis: no data. Run clean (and align if you have multiple exchanges) first.")
+        print("Basis: no data (need clean + align first).")
         return
 
     if "close_usdt" not in base.columns:

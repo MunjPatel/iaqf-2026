@@ -1,10 +1,4 @@
-"""
-Kraken REST API OHLC collector.
-§2.1: GET api.kraken.com/0/public/OHLC — pair, interval=1, since.
-Fields: [timestamp, open, high, low, close, vwap, volume, count]. Max 720 candles/request (12h).
-§2.3: Kraken ticker names differ (XBT vs BTC, XXBTZUSD vs XBTUSD) — use mapping if needed.
-Rate limit: 1 req/s — use 1s sleep.
-"""
+"""kraken rest api ohlc collector. we fetch 1m ohlc in chunks (720/request). kraken uses xbt vs btc tickers; rate limit 1 req/s."""
 import json
 import time
 
@@ -13,7 +7,7 @@ import requests
 
 from src.utils import get_project_root, load_config, parse_window
 
-# Kraken returns pair key dynamically (e.g. XXBTZUSD). We'll take the first key in result.
+# kraken returns pair key dynamically (e.g. xxbtzusd). we take the first key in result
 OHLC_COLUMNS = ["time", "open", "high", "low", "close", "vwap", "volume", "count"]
 
 
@@ -27,7 +21,7 @@ def fetch_ohlc(
     sleep_s: float = 1.0,
     max_retries: int = 5,
 ):
-    """Fetch 1m OHLC. start_ts/end_ts in seconds. Returns list of [time, o, h, l, c, vwap, vol, count]."""
+    """fetch 1m ohlc. start_ts/end_ts in seconds. returns list of [time, o, h, l, c, vwap, vol, count]."""
     url = f"{base_url}/0/public/OHLC"
     all_rows = []
     since = start_ts
@@ -44,10 +38,10 @@ def fetch_ohlc(
             if r.status_code == 200:
                 out = r.json()
                 if out.get("error") and out["error"]:
-                    # e.g. "Unknown pair" — try alt pair name
+                    # e.g. unknown pair — try alt pair name
                     raise RuntimeError(f"Kraken API error: {out['error']}")
                 result = out.get("result") or {}
-                # Result has one key (pair id, e.g. XXBTZUSD or XBTUSD)
+                # result has one key (pair id, e.g. xxbtzusd or xbtusd)
                 keys = [k for k in result if k != "last"]
                 if not keys:
                     break
@@ -81,7 +75,7 @@ def fetch_ohlc(
 
 
 def raw_to_dataframe(rows: list) -> pd.DataFrame:
-    """Parse Kraken OHLC to DataFrame."""
+    """parse kraken ohlc to dataframe."""
     if not rows:
         return pd.DataFrame()
     df = pd.DataFrame(rows, columns=OHLC_COLUMNS)
