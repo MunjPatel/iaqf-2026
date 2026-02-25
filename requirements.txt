@@ -1,0 +1,15 @@
+# IAQF 2026 — Pinned versions for reproducibility (§6.2, §6.3)
+requests>=2.31.0,<3
+pandas>=2.1.0,<3
+pyarrow>=14.0.0
+pyyaml>=6.0
+numpy>=1.26.0,<3
+
+# Analysis (to be used in later steps)
+statsmodels>=0.14.0
+arch>=7.0.0
+linearmodels>=5.0
+matplotlib>=3.8
+seaborn>=0.13
+plotly>=5.18.0
+kaleido>=0.2.0
