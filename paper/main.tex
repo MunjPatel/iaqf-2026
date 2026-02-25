@@ -10,7 +10,6 @@
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage{booktabs}
-\usepackage{hyperref}
 \newcommand{\includeimageifexists}[2][]{%
   \IfFileExists{#2}{\includegraphics[#1]{#2}}{\centering\fbox{\parbox{0.85\textwidth}{\centering\small [Figure: run \texttt{export\_paper\_figures.py} to generate]}}}%
 }
@@ -21,6 +20,9 @@
 \title{Cross-Currency Dynamics in Cryptocurrency Markets: Evidence from the March 2023 Stablecoin Shock}
 \author{} % Blind: no school, student, or team name in the solution
 \date{}
+
+% hyperref must be loaded last for cross-references to resolve correctly
+\usepackage[hidelinks]{hyperref}
 
 \begin{document}
 \maketitle
