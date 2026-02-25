@@ -1,0 +1,7 @@
+metric,regime,mean_bps,std_bps,median_bps,count
+usdc_discount,Pre-SVB,0.02,3.68,0.01,12693
+usdc_discount,SVB crisis,234.02,282.95,100.62,5760
+usdc_discount,Post-SVB,1.19,9.78,1.24,11520
+usdt_discount,Pre-SVB,-0.29,2.99,-0.27,12684
+usdt_discount,SVB crisis,-57.14,42.12,-55.32,5760
+usdt_discount,Post-SVB,-32.98,9.93,-31.59,11520

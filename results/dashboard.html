@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>IAQF 2026 – Cross-Currency Dynamics Results</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 1200px; margin: 0 auto; padding: 1rem; }
+    h1 { color: #1a1a2e; }
+    h2 { margin-top: 2rem; color: #16213e; }
+    h3 { margin-top: 1.2rem; color: #333; }
+    .table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.9rem; }
+    .table th, .table td { border: 1px solid #ddd; padding: 0.5rem; text-align: left; }
+    .table th { background: #eee; }
+    .table a { color: #0173B2; }
+    .plot-iframe { border: none; width: 100%; display: block; margin: 1rem 0; }
+    .plot { margin: 1rem 0; }
+    .standout { background: #f8f9fa; padding: 1rem; border-radius: 8px; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>IAQF Student Competition 2026</h1>
+  <p><strong>Cross-Currency Dynamics in Cryptocurrencies under Stablecoin Regulation</strong></p>
+  <p>Window: March 1–21, 2023 (UTC). Base asset: BTC. Exchanges: Coinbase, Binance, Kraken.</p>
+
+  <h2>Q1: Cross-Currency Basis</h2>
+  <p>BTC/USD vs BTC/USDT vs BTC/USDC (basis in bps). Dashed vertical lines = news events; click headlines below for articles.</p>
+  <div class="plot"><iframe src="plot_basis_timeseries.html" class="plot-iframe" style="height:500px"></iframe></div>
+  <h3>News & events (click to open article)</h3>
+  <table class="table"><thead><tr><th>Time (UTC)</th><th>Headline (click for article)</th></tr></thead><tbody><tr><td>2023-03-11 04:00 UTC</td><td><a href="https://www.cnbc.com/2023/03/11/stablecoin-usdc-breaks-dollar-peg-after-firm-reveals-it-has-3point3-billion-in-svb-exposure.html" target="_blank" rel="noopener">USDC breaks dollar peg after Circle's SVB exposure (CNBC)</a></td></tr><tr><td>2023-03-11 08:00 UTC</td><td><a href="https://www.cnn.com/2023/03/11/business/stablecoin-circle-silicon-valley-bank/index.html" target="_blank" rel="noopener">Stablecoin USDC breaks peg on Circle SVB exposure (CNN)</a></td></tr><tr><td>2023-03-13 12:00 UTC</td><td><a href="https://www.coindesk.com/business/2023/03/13/usdc-stablecoin-regains-dollar-peg-after-silicon-valley-bank-induced-chaos/" target="_blank" rel="noopener">USDC regains dollar peg after SVB chaos (CoinDesk)</a></td></tr><tr><td>2023-03-13 16:00 UTC</td><td><a href="https://techcrunch.com/2023/03/13/usdc-stablecoin-fed-regulation/" target="_blank" rel="noopener">SVB mess could become stablecoins' problem (TechCrunch)</a></td></tr><tr><td>2023-03-14 00:00 UTC</td><td><a href="https://www.investopedia.com/what-happened-to-silicon-valley-bank-7368676" target="_blank" rel="noopener">What happened to Silicon Valley Bank (Investopedia)</a></td></tr><tr><td>2023-03-15 00:00 UTC</td><td><a href="https://www.investopedia.com/usdc-loses-peg-7254222" target="_blank" rel="noopener">USDC depeg and recovery explained (Investopedia)</a></td></tr><tr><td>2023-03-10 22:00 UTC</td><td><a href="https://www.bbc.com/news/business-64915616" target="_blank" rel="noopener">Silicon Valley Bank failure – what you need to know (BBC)</a></td></tr></tbody></table>
+  <h3>Summary by regime</h3>
+  <table border="1" class="dataframe table table-sm">
+  <thead>
+    <tr style="text-align: right;">
+      <th>basis</th>
+      <th>regime</th>
+      <th>mean_bps</th>
+      <th>std_bps</th>
+      <th>median_bps</th>
+      <th>min_bps</th>
+      <th>max_bps</th>
+      <th>count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>USD-USDT</td>
+      <td>Pre-SVB (Mar 1-9)</td>
+      <td>0.2934</td>
+      <td>2.9901</td>
+      <td>0.2727</td>
+      <td>-18.8703</td>
+      <td>56.5824</td>
+      <td>12684</td>
+    </tr>
+    <tr>
+      <td>USD-USDT</td>
+      <td>SVB crisis (Mar 10-13)</td>
+      <td>56.6414</td>
+      <td>41.6127</td>
+      <td>55.0148</td>
+      <td>-16.4322</td>
+      <td>190.3909</td>
+      <td>5760</td>
+    </tr>
+    <tr>
+      <td>USD-USDT</td>
+      <td>Post-SVB (Mar 14-21)</td>
+      <td>32.8576</td>
+      <td>9.8554</td>
+      <td>31.4880</td>
+      <td>-31.7606</td>
+      <td>84.1755</td>
+      <td>11520</td>
+    </tr>
+    <tr>
+      <td>USD-USDC</td>
+      <td>Pre-SVB (Mar 1-9)</td>
+      <td>-0.0247</td>
+      <td>3.6823</td>
+      <td>-0.0089</td>
+      <td>-29.9849</td>
+      <td>34.6558</td>
+      <td>12693</td>
+    </tr>
+    <tr>
+      <td>USD-USDC</td>
+      <td>SVB crisis (Mar 10-13)</td>
+      <td>-248.5823</td>
+      <td>309.1948</td>
+      <td>-101.6436</td>
+      <td>-1424.9106</td>
+      <td>66.9460</td>
+      <td>5760</td>
+    </tr>
+    <tr>
+      <td>USD-USDC</td>
+      <td>Post-SVB (Mar 14-21)</td>
+      <td>-1.1961</td>
+      <td>9.7828</td>
+      <td>-1.2364</td>
+      <td>-117.0995</td>
+      <td>94.1023</td>
+      <td>11520</td>
+    </tr>
+    <tr>
+      <td>USDT-USDC</td>
+      <td>Pre-SVB (Mar 1-9)</td>
+      <td>-0.3183</td>
+      <td>4.3981</td>
+      <td>-0.2953</td>
+      <td>-55.1479</td>
+      <td>32.1697</td>
+      <td>12684</td>
+    </tr>
+    <tr>
+      <td>USDT-USDC</td>
+      <td>SVB crisis (Mar 10-13)</td>
+      <td>-307.7212</td>
+      <td>332.3665</td>
+      <td>-144.1202</td>
+      <td>-1502.5439</td>
+      <td>40.1370</td>
+      <td>5760</td>
+    </tr>
+    <tr>
+      <td>USDT-USDC</td>
+      <td>Post-SVB (Mar 14-21)</td>
+      <td>-34.1761</td>
+      <td>14.1565</td>
+      <td>-32.8293</td>
+      <td>-179.6652</td>
+      <td>36.6646</td>
+      <td>11520</td>
+    </tr>
+  </tbody>
+</table>
+  <div class="plot"><iframe src="plot_basis_by_regime.html" class="plot-iframe" style="height:460px"></iframe></div>
+
+  <h2>Standout: Extra insight plots</h2>
+  <div class="standout">
+  <p>Basis distribution by regime, rolling volatility, event-study around SVB, and exploitable basis (net of transaction cost).</p>
+  <div class="plot"><iframe src="plot_basis_distribution_regime.html" class="plot-iframe" style="height:460px"></iframe></div>
+  <div class="plot"><iframe src="plot_rolling_basis_vol.html" class="plot-iframe" style="height:460px"></iframe></div>
+  <div class="plot"><iframe src="plot_event_study_svb.html" class="plot-iframe" style="height:460px"></iframe></div>
+  <div class="plot"><iframe src="plot_exploitable_basis.html" class="plot-iframe" style="height:460px"></iframe></div>
+  </div>
+
+  <h2>Q2: Stablecoin Dynamics</h2>
+  <p>Implied USDC/USDT discount from peg (1.00) during SVB event.</p>
+  <div class="plot"><iframe src="plot_stablecoin_discount.html" class="plot-iframe" style="height:460px"></iframe></div>
+
+  <h2>Q3: Liquidity & Fragmentation</h2>
+  <p>High-low spread proxy and volume by exchange and pair (1h resampled).</p>
+  <div class="plot"><iframe src="plot_liquidity.html" class="plot-iframe" style="height:460px"></iframe></div>
+
+  <h2>Q4: Regulatory Overlay</h2>
+  <p>See <code>results/regulatory_overlay.md</code> for mapping of findings to GENIUS Act and policy implications.</p>
+</body>
+</html>
