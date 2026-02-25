@@ -1,0 +1,55 @@
+# IAQF 2026 — Centralized parameters (per implementation plan §6.1)
+
+# IAQF 2026: 21-day window March 1–21, 2023 (UTC); includes USDC de-peg (SVB).
+start_date: "2023-03-01"
+end_date: "2023-03-22"   # exclusive: through March 21 23:59
+timezone: "UTC"
+
+# Candle granularity (primary: 1-minute)
+candle_interval_minutes: 1
+
+# Exchanges and pairs (per §1, §2.1)
+coinbase:
+  base_url: "https://api.exchange.coinbase.com"
+  pairs:
+    - "BTC-USD"
+    - "BTC-USDT"
+    - "BTC-USDC"
+  max_candles_per_request: 300
+  rate_limit_sleep_seconds: 0.2   # ~5 req/s with margin (public 10/s)
+
+binance:
+  base_url: "https://api.binance.us"
+  pairs:
+    - "BTCUSDT"
+    - "BTCUSDC"
+  # Binance does not list BTC/USD (fiat)
+  max_candles_per_request: 1000
+  rate_limit_sleep_seconds: 0.35
+
+kraken:
+  base_url: "https://api.kraken.com"
+  # REST OHLC accepts altname (XBTUSD) or internal (XXBTZUSD). Use AssetPairs to verify.
+  pairs:
+    - "XBTUSD"
+    - "XBTUSDT"
+    - "XBTUSDC"
+  max_candles_per_request: 720
+  rate_limit_sleep_seconds: 1.0   # 1 req/s public
+
+# Paths (relative to project root)
+paths:
+  raw: "data/raw"
+  clean: "data/clean"
+  derived: "data/derived"
+  supplementary: "data/supplementary"
+
+# Cleaning (§2.2 Step 2)
+cleaning:
+  max_consecutive_missing_forward_fill: 5
+  expected_candles_21d: 30240   # 21 * 24 * 60
+
+# Robustness / analysis defaults (§4)
+winsorize_lower_percentile: 1
+winsorize_upper_percentile: 99
+newey_west_bandwidth: null   # set to max(1, int(T**0.33)) in code
