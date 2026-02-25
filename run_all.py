@@ -1,12 +1,8 @@
-"""
-IAQF 2026 — One script to run pipeline and produce results + interactive dashboard.
-Order: clean -> align -> basis -> returns -> liquidity -> analysis -> visualizations -> dashboard.
-Open results/dashboard.html in a browser for interactive visualizations.
-"""
+"""single pipeline entry point: clean, align, basis, returns, liquidity, analysis, visualizations, dashboard. we open results/dashboard.html in a browser for interactive plots."""
 import sys
 from pathlib import Path
 
-# Run from project root with PYTHONPATH set to project root
+# run from project root with PYTHONPATH set to project root
 ROOT = Path(__file__).resolve().parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
@@ -45,7 +41,7 @@ def main():
         runpy.run_path(str(ROOT / "scripts" / "export_paper_figures.py"), init_globals={"__name__": "__main__"}, run_name="__main__")
     except Exception as e:
         print(f"   (Paper figures skip; install kaleido: {e})")
-    print("\nDone. Open results/dashboard.html in your browser. Build the PDF from paper/ (see README).")
+    print("\nDone. We built the dashboard at results/dashboard.html. Run pdflatex twice in paper/ to build the PDF.")
 
 
 if __name__ == "__main__":
