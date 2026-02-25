@@ -1,0 +1,25 @@
+# Data (§6.3: API data fetched fresh, too large for git)
+data/raw/
+*.parquet
+*_raw.json
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Paper build
+paper/*.aux
+paper/*.log
+paper/*.out
+paper/*.bbl
+paper/*.blg
+paper/main.pdf
+SUBMISSION_CHECKLIST.md
