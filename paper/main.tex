@@ -1,0 +1,189 @@
+% IAQF Annual Academic Competition: solution max 10 pages, single-sided, Times New Roman 12pt.
+% Solution must contain NO reference to school, students, or team name (blind judging).
+% Code is submitted as a separate addendum, not in these 10 pages.
+\documentclass[12pt,oneside,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{times} % Times New Roman (text); math uses default to avoid missing rsfs font in minimal TeX
+\renewcommand{\ttdefault}{cmtt} % Use Computer Modern Typewriter for \texttt (avoids missing pcr in TinyTeX)
+\usepackage{geometry}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\newcommand{\includeimageifexists}[2][]{%
+  \IfFileExists{#2}{\includegraphics[#1]{#2}}{\centering\fbox{\parbox{0.85\textwidth}{\centering\small [Figure: run \texttt{export\_paper\_figures.py} to generate]}}}%
+}
+\geometry{margin=1in}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+
+\title{Cross-Currency Dynamics in Cryptocurrency Markets: Evidence from the March 2023 Stablecoin Shock}
+\author{} % Blind: no school, student, or team name in the solution
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We use high-frequency data from Coinbase, Binance, and Kraken over March 1--21, 2023 to study how Bitcoin priced in USD, USDT, and USDC responded to the Silicon Valley Bank (SVB) failure and the temporary de-pegging of USDC. The cross-currency basis between BTC/USD and BTC/USDT stayed small before and after the crisis, but the basis involving USDC spiked to a mean of roughly $-250$ bps during the event window---pointing to USDC-specific counterparty risk rather than broad stablecoin stress. We tie these results to the GENIUS Act and argue that reserve transparency and credible backstops would have shortened the stress. We also document a sharp rise in liquidity (spread) during the crisis and discuss implications for trading, risk management, and policy.
+\end{abstract}
+
+\section{Introduction and motivation}
+
+Cryptocurrency spot markets are unusual: the same asset often trades against several quote currencies on the same day. Besides the dollar, stablecoins like USDT and USDC act as de facto funding and settlement rails. That creates a natural question---do prices in USD and in stablecoins move in lockstep, or do we see persistent gaps that reflect counterparty risk, regulation, or liquidity?
+
+The March 2023 failure of Silicon Valley Bank (SVB) and the brief de-pegging of USDC gave a clear stress test. Circle, the issuer of USDC, had \$3.3 billion of reserves at SVB. When that became public, USDC traded below \$1 and the price of Bitcoin quoted in USDC diverged from the price quoted in USD or USDT. We use this episode to answer the competition's four questions: how the cross-currency basis behaves, how stablecoin premiums and discounts move across exchanges and regimes, how liquidity and fragmentation look across quote currencies, and what it all implies for the new U.S. stablecoin framework (the GENIUS Act) and for market structure.
+
+Our main message is simple. The basis between USD- and USDT-quoted BTC was tiny before the crisis and stayed modest even during it (mean about 57 bps in the crisis window). The basis involving USDC, by contrast, blew out to a mean of about $-249$ bps (USD--USDC) and $-308$ bps (USDT--USDC) in the same window. So the shock was not ``stablecoins in general'' but specifically USDC and its reserve exposure. That supports the view that regulation that mandates reserve transparency and clear redemption rights---as under the GENIUS Act---could reduce the kind of uncertainty that drove the March 2023 dislocation. We also show that liquidity, measured by high-low spread, widened across venues during the crisis but that USD-quoted volume held up relative to stablecoin-quoted volume, which fits the idea that fiat rails were a relative safe haven when stablecoin reserves were in doubt.
+
+The rest of the paper is organised as follows. Section 2 briefly summarises the regulatory background. Section 3 describes the data and methodology. Section 4 presents the empirical results. Section 5 discusses regulation and market structure. Section 6 concludes with implications for trading, risk management, and policy.
+
+\section{Regulatory background}
+
+In 2025 the United States enacted the Guiding and Establishing National Innovation for U.S. Stablecoins Act (GENIUS Act). For the first time, dollar-pegged stablecoins like USDC and USDT were brought into a federal regulatory framework with requirements for reserve backing, transparency, and oversight by banking regulators. The aim is to turn stablecoins into reliable infrastructure for payments and settlement rather than experimental tokens.
+
+Two implications matter for our work. First, reserve transparency and clear redemption rights should reduce the kind of information shock that hit USDC when Circle's SVB exposure became news. Second, regulatory clarity may change where volume and liquidity sit---for example, concentrating activity on compliant venues and potentially reducing fragmentation, but also raising concentration risk. Our March 2023 data give a pre-regulation baseline: we can ask how the basis and liquidity behaved when there was no federal stablecoin regime, and then reason about how the new rules might alter those patterns.
+
+\section{Data and methodology}
+
+\subsection{Sample and sources}
+
+We study a 21-day window, March 1--21, 2023 (UTC). The window includes the SVB failure (March 10), the disclosure of Circle's SVB exposure and the USDC de-peg (March 11), the Fed's backstop for SVB depositors (March 12), and the restoration of the USDC peg (around March 13).
+
+We use 1-minute OHLCV candle data from three exchanges:
+\begin{itemize}
+\item \textbf{Coinbase}: BTC-USD, BTC-USDT, BTC-USDC (REST API, 300 candles per request).
+\item \textbf{Binance}: BTCUSDT, BTCUSDC (Binance does not list spot BTC/USD; we use Binance US or global as in config).
+\item \textbf{Kraken}: XBTUSD, XBTUSDT, XBTUSDC (where historical data are available).
+\end{itemize}
+
+Raw data are collected in chunks respecting each API's rate limits, saved as JSON then Parquet. We clean by aligning to a full 1-minute grid (30,240 minutes for 21 days), forward-filling gaps of at most 5 minutes, and dropping duplicates. For cross-exchange analysis we inner-join on timestamp so that every observation is aligned across exchanges.
+
+\subsection{Basis and regimes}
+
+For any two quote currencies $A$ and $B$, we define the basis (in basis points) as
+\[
+\text{basis}_{A,B}(t) = \frac{P^{\text{BTC}/A}_t - P^{\text{BTC}/B}_t}{P^{\text{BTC}/A}_t} \times 10^4.
+\]
+We compute USD--USDT, USD--USDC, and USDT--USDC. A positive basis means the $A$-denominated price is higher than the $B$-denominated price.
+
+We split the sample into three regimes:
+\begin{itemize}
+\item \textbf{Pre-SVB}: March 1--9.
+\item \textbf{SVB crisis}: March 10--13.
+\item \textbf{Post-SVB}: March 14--21.
+\end{itemize}
+
+\subsection{Stablecoin discount and liquidity}
+
+We measure the implied USDC (or USDT) discount from the dollar peg by \(1 - P^{\mathrm{USD}}/P^{\mathrm{USDC}}\), where \(P^{\mathrm{USD}}\) and \(P^{\mathrm{USDC}}\) denote the BTC/USD and BTC/USDC prices, again in bps. For liquidity we use the high-low spread proxy (high minus low, divided by the mid, in bps) and dollar volume (volume $\times$ close) at 1-minute then 1-hour aggregation where needed.
+
+\section{Empirical results}
+
+\subsection{Cross-currency basis}
+
+Table~\ref{tab:basis} reports summary statistics for the three basis series by regime. Before the crisis, all three bases are close to zero (means between about $-0.32$ and $0.29$ bps). During the SVB crisis, the USD--USDT basis rises to a mean of about 57 bps---noticeable but modest. The USD--USDC and USDT--USDC bases, by contrast, collapse to large negative means (about $-249$ and $-308$ bps), with very high standard deviations and minima below $-1400$ bps. That is exactly what we would expect if USDC had lost its peg while USDT had not: BTC/USDC became cheap relative to BTC/USD and BTC/USDT. After the crisis, the USDC-related bases mean-revert but do not fully return to pre-crisis levels (USD--USDC mean about $-1.2$ bps, USDT--USDC about $-34$ bps), consistent with some lingering uncertainty.
+
+\begin{table}[htbp]
+\centering
+\caption{Cross-currency basis (bps) by regime. Source: \texttt{results/basis\_summary\_by\_regime.csv} (reproduced by \texttt{run\_all.py}).}
+\label{tab:basis}
+\input{tables/basis_summary}
+\end{table}
+
+Figure~\ref{fig:basis_ts} plots the basis time series. The USD--USDT line stays near zero throughout the sample. The USD--USDC and USDT--USDC bases drop sharply in the crisis window (shaded) and then recover. The shaded bands indicate Pre-SVB (March 1--9), SVB crisis (March 10--13), and Post-SVB (March 14--21). This visual supports a causal interpretation: the dislocation is confined to USDC and aligns with the disclosure of Circle's SVB exposure and the Fed backstop.
+
+\begin{figure}[htbp]
+\centering
+\includeimageifexists[width=\textwidth]{figures/fig1_basis_timeseries.png}
+\caption{Cross-currency basis (bps), March 1--21, 2023. Shaded regions: Pre-SVB, SVB crisis, Post-SVB.}
+\label{fig:basis_ts}
+\end{figure}
+
+Figure~\ref{fig:basis_regime} summarises the same information by regime: the mean USD--USDT basis remains small in all three regimes, while the USDC-related bases spike negatively in the crisis and only partially normalise afterwards.
+\begin{figure}[htbp]
+\centering
+\includeimageifexists[width=0.85\textwidth]{figures/fig3_basis_by_regime.png}
+\caption{Mean cross-currency basis (bps) by regime.}
+\label{fig:basis_regime}
+\end{figure}
+
+\subsection{Stablecoin dynamics}
+
+Table~\ref{tab:stablecoin} summarises the implied USDC and USDT discount from the dollar peg. Pre-SVB, both are essentially zero. In the crisis, the USDC discount jumps to a mean of about 234 bps (median about 101 bps), while the USDT discount goes negative (mean about $-57$ bps)---so USDT was trading at a small premium to the dollar when USDC was at a large discount. That fits the narrative: flight out of USDC into USDT and USD. Post-SVB, the USDC discount returns to near zero; the USDT series stays slightly negative (mean about $-33$ bps), consistent with a modest premium that unwinds slowly.
+
+\begin{table}[htbp]
+\centering
+\caption{Stablecoin implied discount from peg (bps) by regime. Source: \texttt{results/stablecoin\_discount\_by\_regime.csv}.}
+\label{tab:stablecoin}
+\input{tables/stablecoin_summary}
+\end{table}
+
+Figure~\ref{fig:stablecoin} shows the implied USDC and USDT discount from the dollar peg over time. The USDC discount spikes in the crisis window (grey band) and reverts after the Fed backstop; the USDT series remains close to zero or slightly negative (premium), consistent with flight out of USDC into USDT and USD.
+
+\begin{figure}[htbp]
+\centering
+\includeimageifexists[width=\textwidth]{figures/fig2_stablecoin_discount.png}
+\caption{Stablecoin implied discount from peg (bps). Shaded regions: Pre-SVB, SVB crisis, Post-SVB.}
+\label{fig:stablecoin}
+\end{figure}
+
+\subsection{Liquidity and fragmentation}
+
+Liquidity (high-low spread in bps) and dollar volume by exchange and quote currency are in \texttt{results/liquidity\_by\_regime.csv}. Figure~\ref{fig:liquidity} plots the 1-hour average high-low spread and 1-hour dollar volume by exchange and pair. Spreads widen in the crisis: for example, Coinbase USD spread rises from about 6.2 bps (pre-SVB) to about 13.7 bps (crisis) and remains elevated post-SVB (about 15.0 bps). Binance USDT spread rises from about 5.2 bps to about 11.3 bps in the crisis. Volume on USD-quoted pairs (Coinbase BTC-USD) stays large throughout; stablecoin-quoted volume is more volatile. So liquidity did not disappear, but it became costlier (wider spreads), and the relative stability of USD-quoted volume is consistent with a flight to fiat when stablecoin reserves were in doubt.
+
+\begin{figure}[htbp]
+\centering
+\includeimageifexists[width=\textwidth]{figures/fig4_liquidity.png}
+\caption{Liquidity: high-low spread (bps, 1h average) and volume USD (1h sum) by exchange and pair. Shaded regions: Pre-SVB, SVB crisis, Post-SVB.}
+\label{fig:liquidity}
+\end{figure}
+
+\section{Discussion: regulation and market structure}
+
+Our results speak directly to the competition's regulatory question.
+
+First, \textbf{cross-currency basis}. The fact that the USD--USDT basis stayed small while the USDC-related bases blew out shows that the shock was not ``all stablecoins'' but specifically uncertainty about USDC's reserves. The GENIUS Act's requirements for reserve transparency and redemption rights would reduce that kind of uncertainty. We would expect smaller and shorter-lived basis spikes in future stress if issuers are required to report reserves and honour redemptions in a predictable way.
+
+Second, \textbf{stablecoin stress}. The USDC de-peg and its recovery within a few days illustrate how quickly markets can reprice when information is revealed (Circle's exposure) and when a backstop is announced (Fed support for SVB depositors). Regulation that makes reserve quality and backstop credibility explicit could compress the time to recovery and reduce the peak discount.
+
+Third, \textbf{liquidity and fragmentation}. Spreads widened across the board in the crisis, but USD-quoted markets held volume better. Regulatory clarity may concentrate more volume on compliant, fiat-linked venues. That could reduce fragmentation (fewer venues with thin order books) but also increase concentration risk, which policymakers will need to balance.
+
+We do not claim that the GENIUS Act would have prevented the March 2023 event. We do argue that our evidence is consistent with the view that reserve transparency and credible backstops would have shortened the stress and narrowed the basis dislocation.
+
+\section{Conclusions and implications}
+
+\subsection{Trading}
+
+In normal times the cross-currency basis is tiny---often within a few bps. So for most of the time, arbitrage between USD- and stablecoin-quoted BTC is limited by transaction costs rather than by large, persistent mispricings. During the March 2023 crisis, the USDC-related basis became large enough to be economically meaningful; our ``exploitable basis'' plot (basis minus a round-trip cost of 50 bps) shows that only in the worst hours did the basis clearly exceed that threshold. For trading desks, the lesson is that cross-currency basis risk is low in calm markets but can spike when a specific stablecoin's reserves are questioned. Hedging and execution should account for that.
+
+\subsection{Risk management}
+
+Risk managers should treat stablecoin-quoted positions as carrying counterparty and regulatory risk that can show up in the basis and in liquidity. Our regime split (pre / crisis / post) suggests that stress can be short-lived if information and policy responses are fast. Monitoring the basis and the implied stablecoin discount in real time can give early warning of market stress and help size limits and collateral.
+
+\subsection{Policy}
+
+Our findings support the idea that the GENIUS Act's focus on reserve transparency and redemption rights is well targeted. The March 2023 episode showed that when reserve quality is uncertain, the basis and the stablecoin discount can move sharply; when the backstop was announced, they mean-reverted. Making reserves and backstops more transparent and predictable should reduce the magnitude and duration of future dislocations. For institutional adoption (e.g., Visa's USDC settlement), our results quantify the type of risk that regulation aims to mitigate: the USDC discount reached hundreds of bps at the trough, and the basis took several days to normalise. A clearer regulatory framework should make such outcomes less likely and easier to manage.
+
+\section*{Reproducibility}
+
+All results in this paper are produced by the code in this repository. To reproduce:
+
+\begin{enumerate}
+\item Clone the repo and install dependencies: \texttt{pip install -r requirements.txt}.
+\item Set the project root in \texttt{config.yaml} (optional; default paths are relative).
+\item Collect data (requires network): run \texttt{python -m src.collection.coinbase} and \texttt{python -m src.collection.binance} with \texttt{PYTHONPATH} set to the project root. For Kraken historical data, see the README.
+\item Run the full pipeline: \texttt{python run\_all.py}. This cleans the data, aligns exchanges, computes basis and liquidity, runs the analysis, and builds the interactive dashboard and result tables.
+\item Tables used in this paper are in \texttt{results/} (e.g. \texttt{basis\_summary\_by\_regime.csv}). Static figures included in this PDF are in \texttt{paper/figures/} (PNG, generated by \texttt{scripts/export\_paper\_figures.py}, which requires \texttt{kaleido}). Interactive plots are in \texttt{results/plot\_*.html}; the dashboard is \texttt{results/dashboard.html}.
+\end{enumerate}
+
+No API keys are required for the public endpoints used. The exact sample period and exchanges are set in \texttt{config.yaml}.
+
+\begin{thebibliography}{9}
+\bibitem{genius} U.S. Congress. Guiding and Establishing National Innovation for U.S. Stablecoins Act (GENIUS Act). 2025.
+\bibitem{circle} Circle. USDC reserve and SVB. March 2023.
+\bibitem{svb} FDIC. Silicon Valley Bank closure. March 10, 2023.
+\end{thebibliography}
+
+\end{document}
