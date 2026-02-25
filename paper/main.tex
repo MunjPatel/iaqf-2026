@@ -1,11 +1,11 @@
-% IAQF Annual Academic Competition: solution max 10 pages, single-sided, Times New Roman 12pt.
-% Solution must contain NO reference to school, students, or team name (blind judging).
-% Code is submitted as a separate addendum, not in these 10 pages.
+% iaqf 2026: solution max 10 pages, single-sided, times new roman 12pt.
+% blind judging: no reference to school, students, or team name.
+% code submitted as separate addendum.
 \documentclass[12pt,oneside,a4paper]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
-\usepackage{times} % Times New Roman (text); math uses default to avoid missing rsfs font in minimal TeX
-\renewcommand{\ttdefault}{cmtt} % Use Computer Modern Typewriter for \texttt (avoids missing pcr in TinyTeX)
+\usepackage{times} % times new roman for text; math uses default to avoid missing rsfs in tinytex
+\renewcommand{\ttdefault}{cmtt} % computer modern typewriter for \texttt (avoids missing pcr in tinytex)
 \usepackage{geometry}
 \usepackage{amsmath}
 \usepackage{graphicx}
@@ -18,10 +18,10 @@
 \setlength{\parskip}{6pt}
 
 \title{Cross-Currency Dynamics in Cryptocurrency Markets: Evidence from the March 2023 Stablecoin Shock}
-\author{} % Blind: no school, student, or team name in the solution
+\author{} % blind: no school, student, or team name
 \date{}
 
-% hyperref must be loaded last for cross-references to resolve correctly
+% hyperref loaded last so cross-refs resolve (run pdflatex twice)
 \usepackage[hidelinks]{hyperref}
 
 \begin{document}
