@@ -1,0 +1,112 @@
+================================================================================
+CODE ADDENDUM — REPRODUCTION INSTRUCTIONS
+================================================================================
+
+This code reproduces all results, figures, and tables in the accompanying
+10-page solution PDF. The analysis covers cross-currency dynamics in
+cryptocurrency markets during the March 2023 SVB/USDC stress episode.
+
+--------------------------------------------------------------------------------
+REQUIREMENTS
+--------------------------------------------------------------------------------
+
+- Python 3.9 or higher
+- Internet access (to fetch exchange data from public APIs)
+- No API keys required
+
+--------------------------------------------------------------------------------
+QUICK START (5 MINUTES)
+--------------------------------------------------------------------------------
+
+1. Extract this ZIP to a folder (e.g. "code_addendum/")
+
+2. Open a terminal in that folder and create a virtual environment:
+
+       python -m venv .venv
+
+3. Activate the environment:
+
+   Windows (PowerShell):
+       .\.venv\Scripts\Activate.ps1
+
+   macOS/Linux:
+       source .venv/bin/activate
+
+4. Install dependencies:
+
+       pip install -r requirements.txt
+
+5. Set PYTHONPATH to the current folder:
+
+   Windows (PowerShell):
+       $env:PYTHONPATH = (Get-Location).Path
+
+   macOS/Linux:
+       export PYTHONPATH=$(pwd)
+
+6. Collect data from exchanges (takes a few minutes):
+
+       python -m src.collection.coinbase
+       python -m src.collection.binance
+
+7. Run the full pipeline (clean, analyze, visualize):
+
+       python run_all.py
+
+8. Open results/dashboard.html in a browser to view interactive plots.
+
+--------------------------------------------------------------------------------
+OUTPUTS
+--------------------------------------------------------------------------------
+
+After running the pipeline:
+
+  results/dashboard.html        Interactive dashboard with all figures
+  results/*.csv                 Summary tables (basis, stablecoin, liquidity)
+  results/plot_*.html           Individual interactive Plotly figures
+  paper/tables/*.tex            LaTeX tables (used in the solution PDF)
+
+--------------------------------------------------------------------------------
+REBUILDING THE PAPER PDF (OPTIONAL)
+--------------------------------------------------------------------------------
+
+If you have pdflatex installed:
+
+    cd paper
+    pdflatex main.tex
+    pdflatex main.tex
+
+The output is paper/main.pdf (run twice to resolve cross-references).
+
+--------------------------------------------------------------------------------
+DIRECTORY STRUCTURE
+--------------------------------------------------------------------------------
+
+    config.yaml           Configuration (sample dates, exchange settings)
+    requirements.txt      Python dependencies
+    run_all.py            Single entry point for the full pipeline
+
+    src/
+      collection/         Data fetching (Coinbase, Binance, Kraken)
+      cleaning/           Grid alignment, forward-fill, validation
+      features/           Basis, returns, liquidity computation
+      analysis/           Regime analysis for the 4 competition questions
+      visualization/      Plotly figures, dashboard builder
+      utils/              Config loader, helpers
+
+    paper/
+      main.tex            LaTeX source for the 10-page solution
+      tables/             Generated .tex tables
+
+    data/                 Created at runtime (raw, clean, derived data)
+    results/              Created at runtime (CSVs, HTML plots, dashboard)
+
+--------------------------------------------------------------------------------
+NOTES
+--------------------------------------------------------------------------------
+
+- All data is fetched fresh from public exchange APIs (Coinbase, Binance).
+- Kraken historical OHLC is limited; we use Coinbase and Binance primarily.
+- The code is self-contained and does not require any external services.
+
+================================================================================

@@ -1,7 +1,4 @@
-""""
-Export key figures as PNG for the paper. Run from project root with PYTHONPATH set.
-Requires: pip install kaleido (or plotly[ Kaleido]).
-""""
+"""export figures to png for the paper. we run this from project root with PYTHONPATH set. needs kaleido."""
 import sys
 from pathlib import Path
 
@@ -16,7 +13,7 @@ from plotly.subplots import make_subplots
 
 from src.utils import get_project_root, load_config
 
-# Reuse styling from plots
+# reuse same palette as plots module
 COLORS = {"usd_usdt": "#0173B2", "usd_usdc": "#DE8F05", "usdt_usdc": "#029E73"}
 REGIME_COLORS = {"pre": "rgba(0,150,80,0.12)", "crisis": "rgba(200,50,50,0.15)", "post": "rgba(70,100,180,0.10)"}
 
@@ -41,7 +38,7 @@ def export_all():
     out_dir = root / "paper" / "figures"
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    # 1. Basis time series
+    # 1. basis time series
     path = derived / "basis_1m.parquet"
     if path.exists():
         df = pd.read_parquet(path)
@@ -67,7 +64,7 @@ def export_all():
         fig.write_image(str(out_dir / "fig1_basis_timeseries.png"), scale=2)
         print("Wrote fig1_basis_timeseries.png")
 
-    # 2. Stablecoin discount
+    # 2. stablecoin discount
     if path.exists():
         df = pd.read_parquet(path)
         df["time"] = pd.to_datetime(df["time"], utc=True)
@@ -87,7 +84,7 @@ def export_all():
             fig.write_image(str(out_dir / "fig2_stablecoin_discount.png"), scale=2)
             print("Wrote fig2_stablecoin_discount.png")
 
-    # 3. Basis by regime (bar)
+    # 3. basis by regime (bar chart)
     csv_path = results / "basis_summary_by_regime.csv"
     if csv_path.exists():
         df = pd.read_csv(csv_path)
@@ -98,7 +95,7 @@ def export_all():
         fig.write_image(str(out_dir / "fig3_basis_by_regime.png"), scale=2)
         print("Wrote fig3_basis_by_regime.png")
 
-    # 4. Liquidity (spread and volume)
+    # 4. liquidity (spread and volume)
     liq_path = derived / "liquidity_1m.parquet"
     if liq_path.exists():
         df = pd.read_parquet(liq_path)

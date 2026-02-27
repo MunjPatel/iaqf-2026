@@ -316,7 +316,7 @@ def build_dashboard(results_dir: Path) -> str:
   </style>
 </head>
 <body>
-  <h1>IAQF Student Competition 2026</h1>
+  <h1>Cross-Currency Dynamics in Cryptocurrency Markets</h1>
   <p><strong>Cross-Currency Dynamics in Cryptocurrencies under Stablecoin Regulation</strong></p>
   <p>Window: March 1–21, 2023 (UTC). Base asset: BTC. Exchanges: Coinbase, Binance, Kraken.</p>
 

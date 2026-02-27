@@ -1,7 +1,4 @@
-"""
-Export result CSVs to LaTeX tables for the paper. Run from project root with PYTHONPATH set.
-Ensures the paper numbers always match the code output.
-"""
+"""export result csvs to latex tables for the paper. we run from project root with PYTHONPATH set so the paper numbers match our code output."""
 import sys
 from pathlib import Path
 
@@ -21,7 +18,7 @@ def export_basis_summary():
         return
     import pandas as pd
     df = pd.read_csv(path)
-    # Regime order for display
+    # regime order for display
     regime_order = ["Pre-SVB (Mar 1-9)", "SVB crisis (Mar 10-13)", "Post-SVB (Mar 14-21)"]
     df["regime"] = pd.Categorical(df["regime"], categories=regime_order, ordered=True)
     df = df.sort_values(["basis", "regime"])
@@ -70,7 +67,7 @@ def export_stablecoin_summary():
 def main():
     export_basis_summary()
     export_stablecoin_summary()
-    print("Paper tables exported. Rebuild the PDF from paper/.")
+    print("We exported the paper tables. Run pdflatex twice in paper/ to rebuild the PDF.")
 
 
 if __name__ == "__main__":
